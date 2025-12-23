@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UV Index Details</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="detail-page">
+
+
+    <div class="detail-container">
+        <div class="big-card card-uv-detail">
+            <a href="index.html" class="back-btn">← Back</a>
+            <h1>UV Index Details</h1>
+
+            <div class="live-data" id="uv-value">--</div>
+            
+            <p id="uv-status" style="font-size: 24px; font-weight: 600; margin-top: -15px; margin-bottom: 20px;">--</p>
+
+            <div class="info-text">
+                <p>
+                    The Ultraviolet (UV) Index is a standardized measure of the strength of ultraviolet radiation from the sun at a particular place and time. It is used to inform the public about the potential risk of overexposure to UV radiation.
+                    <br><br>
+                    The UV Index typically ranges from 0 to 11+, where:
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>0–2:</strong> Low risk</li>
+                        <li><strong>3–5:</strong> Moderate risk</li>
+                        <li><strong>6–7:</strong> High risk</li>
+                        <li><strong>8–10:</strong> Very high risk</li>
+                        <li><strong>11+:</strong> Extreme risk</li>
+                    </ul>
+                    <br>
+                    Higher values mean more intense UV exposure. The scale is linear: double the UV Index means half the time to burn.
+                </p>
+
+                <br>
+                <img src="https://static.vecteezy.com/system/resources/previews/025/279/805/original/infographic-of-uv-index-chart-on-white-background-cute-cartoon-character-of-uv-index-illustration-vector.jpg" width="100%" style="border-radius: 15px; margin-top: 10px;">
+            </div>
+        </div>
+    </div>
+<script>
+        const apikey = "c1c4e900c5a9fbac7d97ddec32761393";
+
+        async function getUV() {
+            // 1. Get stored city
+            const storedCity = localStorage.getItem("weatherCity") || "eluru";
+            document.querySelector("h1").innerText = `UV Index in ${storedCity}`;
+
+            try {
+                // 2. Fetch standard weather data
+                const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?units=metric&q=${storedCity}&appid=${apikey}`);
+                
+                if (!response.ok) {
+                    throw new Error("City not found or API error");
+                }
+
+                const data = await response.json();
+                console.log("Weather Data:", data); // Debugging: Check console to see if data arrives
+
+                // 3. SMART UV ESTIMATION LOGIC
+                let estimatedUV = 0;
+                const now = Math.floor(Date.now() / 1000); // Current time in seconds
+                
+                // CHECK IF IT IS NIGHT TIME
+                if (now < data.sys.sunrise || now > data.sys.sunset) {
+                    // It is night, so UV must be 0
+                    estimatedUV = 0;
+                } else {
+                    // It is day, calculate based on clouds
+                    // 0% clouds = High UV (~10)
+                    // 100% clouds = Low UV (~1)
+                    estimatedUV = Math.max(1, Math.round((100 - data.clouds.all) / 10));
+                }
+
+                // 4. Update the display
+                // Make sure your HTML element has id="uv-value"
+                const uvElement = document.getElementById('uv-value');
+                if (uvElement) {
+                    uvElement.innerText = estimatedUV;
+                } else {
+                    console.error("Could not find element with id 'uv-value'");
+                }
+
+                // 5. Update status text
+                // Make sure your HTML element has id="uv-status"
+                const statusText = document.getElementById('uv-status');
+                if (statusText) {
+                    if (estimatedUV === 0) statusText.innerText = "None (Night)";
+                    else if (estimatedUV <= 2) statusText.innerText = "Low Risk";
+                    else if (estimatedUV <= 5) statusText.innerText = "Moderate Risk";
+                    else if (estimatedUV <= 7) statusText.innerText = "High Risk";
+                    else statusText.innerText = "Very High Risk";
+                }
+
+            } catch (error) {
+                console.error("Error fetching UV:", error);
+                const uvElement = document.getElementById('uv-value');
+                if (uvElement) uvElement.innerText = "--";
+            }
+        }
+
+        getUV();
+    </script>
+
+</body>
+</html>

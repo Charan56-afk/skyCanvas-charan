@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visibility Details</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="detail-page">
+
+    
+
+    <div class="detail-container">
+        <div class="big-card card-visibility-detail">
+            <a href="index.html" class="back-btn">← Back</a>
+            <h1>Visibility</h1>
+            
+            <div class="live-data" id="vis-value">-- km</div>
+            
+            <p id="vis-status" style="font-size: 24px; font-weight: 600; margin-top: -15px; margin-bottom: 20px;">--</p>
+
+            <div class="info-text">
+                <p>
+                    Visibility is the greatest distance at which an object can be seen and recognized. It is a critical factor for road safety and aviation.
+                    <br><br>
+                    <strong>Visibility Levels:</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>10+ km:</strong> Excellent / Clear View</li>
+                        <li><strong>5 - 10 km:</strong> Good / Slight Haze</li>
+                        <li><strong>2 - 5 km:</strong> Moderate / Haze</li>
+                        <li><strong>Less than 1 km:</strong> Poor / Fog (Drive carefully)</li>
+                    </ul>
+                </p>
+                <br>
+                <img src="2204_w039_n003_204b_p1_204.jpg" 
+                     width="100%" style="border-radius: 15px; margin-top: 10px; border: 2px solid rgba(255,255,255,0.2);">
+                
+            </div>
+        </div>
+    </div>
+    <script>
+        const apikey = "c1c4e900c5a9fbac7d97ddec32761393";
+
+        async function getVisibility() {
+            const storedCity = localStorage.getItem("weatherCity") || "Eluru";
+            document.querySelector("h1").innerText = `Visibility in ${storedCity}`;
+
+            try {
+                const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?units=metric&q=${storedCity}&appid=${apikey}`);
+                const data = await response.json();
+                
+                // API gives visibility in meters (e.g., 10000). We convert to km.
+                const visibilityKm = (data.visibility / 1000).toFixed(1);
+
+                // Update Number
+                document.getElementById('vis-value').innerText = visibilityKm + " km";
+
+                // Update Status
+                const statusText = document.getElementById('vis-status');
+                
+                if (visibilityKm >= 10) {
+                    statusText.innerText = "Excellent / Clear";
+                } else if (visibilityKm >= 5) {
+                    statusText.innerText = "Good";
+                } else if (visibilityKm >= 2) {
+                    statusText.innerText = "Moderate / Haze";
+                } else {
+                    statusText.innerText = "Poor / Foggy";
+                }
+
+            } catch (error) {
+                console.error("Error fetching Visibility:", error);
+                document.getElementById('vis-value').innerText = "--";
+            }
+        }
+
+        getVisibility();
+    </script>
+
+</body>
+</html>

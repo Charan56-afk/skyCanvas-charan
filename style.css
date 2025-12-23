@@ -1,0 +1,451 @@
+/* =========================================
+   1. GLOBAL RESET & BODY
+   ========================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradientBG 4s ease infinite;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    color: white;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* =========================================
+   2. MAIN LAYOUT (Left vs Right Split)
+   ========================================= */
+.dashboard-container {
+    display: grid;
+    /* LEFT COLUMN (1 part) vs RIGHT COLUMN (1.5 parts) 
+       This keeps them side-by-side */
+    grid-template-columns: 1fr 1.5fr; 
+    gap: 30px;
+    width: 100%;
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    align-items: start;
+}
+
+/* =========================================
+   3. GLASS EFFECT (Shared)
+   ========================================= */
+.glass-card, 
+.current-weather, 
+.forecast-section, 
+.highlight-card,
+.big-card {
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.5);
+}
+
+/* =========================================
+   4. LEFT COLUMN STYLES
+   ========================================= */
+.main-section {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* --- YouTube Style Logo --- */
+.logo-container.youtube-style {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    margin-bottom: 25px;
+    width: 100%;
+}
+
+.yt-icon {
+    height: 45px; 
+    width: 45px;
+    object-fit: cover;
+    border-radius: 50%;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.yt-text-wrapper {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    color: white;
+}
+
+.yt-brand-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 26px;   
+    font-weight: 700;  
+    letter-spacing: -0.5px; 
+    line-height: 1;    
+}
+
+.yt-sup {
+    font-size: 11px;
+    color: #ddd; 
+    margin-left: 4px;
+    font-weight: 500;
+    top: -5px; 
+}
+
+/* --- Search Bar --- */
+.search-bar {
+    width: 100%;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 20px;
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+    border: 1px solid rgba(255,255,255,0.4);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.search-bar input {
+    background: transparent;
+    border: none;
+    outline: none;
+    flex: 1;
+    font-size: 16px;
+    color: #fff;
+}
+.search-bar input::placeholder { color: #e0e0e0; }
+
+.search-bar button {
+    background: rgba(255,255,255,0.4);
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 10px;
+}
+
+/* Error Message */
+.error {
+    color: #ffcccc;
+    font-size: 14px;
+    display: none;
+    margin-top: -10px;
+    margin-left: 10px;
+}
+
+/* --- Current Weather Card --- */
+.current-weather {
+    background: linear-gradient(135deg, rgba(54, 209, 220, 0.4), rgba(91, 134, 229, 0.4));
+    border-radius: 30px;
+    padding: 30px;
+}
+
+.weather-header { display: flex; justify-content: space-between; align-items: flex-start; }
+.city { font-size: 28px; font-weight: 600; }
+.date-time { color: #eee; font-size: 14px; margin-top: 5px; }
+
+.weather-main-info { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; }
+.temp-box { display: flex; align-items: center; }
+.weather-icon { width: 100px; margin-right: 10px; filter: drop-shadow(0 0 10px rgba(255,255,255,0.5)); }
+.temp { font-size: 72px; font-weight: 300; }
+.condition { font-size: 20px; text-transform: capitalize; }
+.high-low { color: #eee; }
+
+/* --- Forecast Section --- */
+.forecast-section {
+    background: rgba(255, 255, 255, 0.15);
+    padding: 20px;
+    border-radius: 30px;
+}
+.forecast-cards { display: flex; justify-content: space-between; margin-top: 15px; }
+.f-card {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 15px 10px;
+    border-radius: 15px;
+    text-align: center;
+    width: 18%;
+    font-size: 14px;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.3s ease;
+}
+.f-card:hover { transform: scale(1.05); background: rgb(9, 255, 0); color: #333; }
+.f-card.active { background: rgba(255, 255, 255, 0.5); color: #333; font-weight: bold; border: 1px solid rgba(255,255,255,0.6); }
+
+/* =========================================
+   5. RIGHT COLUMN STYLES (Highlights)
+   ========================================= */
+.highlights-section {
+    display: flex;
+    flex-direction: column;
+}
+.highlights-section h3 {
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.highlights-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 Cards per row */
+    gap: 20px;
+}
+
+/* Highlight Cards (SQUARES) */
+.highlight-card {
+    aspect-ratio: 1 / 0; /* Forces perfectly square cards */
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 75px;
+    color: white;
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.highlight-card:hover {
+    transform: scale(1.14);
+    background-color: rgb(247, 223, 6) !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    color: #333;
+}
+.highlight-card:hover h2, 
+.highlight-card:hover .card-title, 
+.highlight-card:hover .card-status { color: #333; }
+
+.highlight-card h2 { font-size: 32px; font-weight: 500; margin: 10px 0; }
+.card-title { color: #f0f0f0; font-size: 14px; opacity: 0.8; }
+.card-status { font-size: 14px; color: #eee; }
+
+/* Highlight Card Colors (Standardized Opacity 0.7 for Visibility) */
+.card-visibility { background: linear-gradient(135deg, rgba(255, 153, 102, 0.7), rgba(255, 94, 98, 0.7)); }
+.card-wind       { background: linear-gradient(135deg, rgba(17, 153, 142, 0.7), rgba(56, 239, 125, 0.7)); }
+.card-humidity   { background: linear-gradient(135deg, rgba(86, 204, 242, 0.7), rgba(47, 128, 237, 0.7)); }
+.card-pressure   { background: linear-gradient(135deg, rgba(142, 45, 226, 0.7), rgba(74, 0, 224, 0.7)); }
+.card-uv         { background: linear-gradient(135deg, rgba(255, 210, 0, 0.7), rgba(247, 151, 30, 0.7)); }
+.card-aqi        { background: linear-gradient(135deg, rgba(236, 0, 140, 0.7), rgba(252, 103, 103, 0.7)); }
+
+/* Highlight Internal Elements */
+.humidity-bar-container { width: 100%; height: 8px; background: rgba(255,255,255,0.3); border-radius: 5px; margin-top: 5px; overflow: hidden; }
+.humidity-bar { height: 100%; background: #fff; border-radius: 5px; width: 50%; }
+.wind-direction { display: flex; align-items: center; gap: 5px; font-size: 14px; }
+.compass { font-size: 18px; transform: rotate(45deg); display: inline-block; }
+
+/* =========================================
+   6. DETAIL PAGE
+   ========================================= */
+.detail-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+.detail-container { width: 100%; max-width: 800px; padding: 20px; animation: fadeIn 0.5s ease-in-out; }
+
+.big-card {
+    position: relative;
+    border-radius: 40px;
+    padding: 50px;
+    text-align: center;
+    color: white;
+}
+
+.back-btn {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    text-decoration: none;
+    color: white;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: 0.3s;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.back-btn:hover { background: white; color: #333; }
+
+.live-data { font-size: 80px; font-weight: 700; margin: 20px 0; }
+.info-text { font-size: 16px; line-height: 1.8; background: rgba(0, 0, 0, 0.2); padding: 20px; border-radius: 20px; text-align: left; margin-top: 30px; }
+
+/* Detail Gradients */
+.card-visibility-detail { background: linear-gradient(135deg, rgba(255, 153, 102, 0.4), rgba(255, 94, 98, 0.4)); }
+.card-wind-detail       { background: linear-gradient(135deg, rgba(17, 153, 142, 0.4), rgba(56, 239, 125, 0.4)); }
+.card-humidity-detail   { background: linear-gradient(135deg, rgba(86, 204, 242, 0.4), rgba(47, 128, 237, 0.4)); }
+.card-pressure-detail   { background: linear-gradient(135deg, rgba(142, 45, 226, 0.4), rgba(74, 0, 224, 0.4)); }
+.card-uv-detail         { background: linear-gradient(135deg, rgba(255, 210, 0, 0.4), rgba(247, 151, 30, 0.4)); }
+.card-aqi-detail        { background: linear-gradient(135deg, rgba(236, 0, 140, 0.4), rgba(252, 103, 103, 0.4)); }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* =========================================
+   7. FOOTER
+   ========================================= */
+.white-footer {
+    width: 100%;
+    background: #ffffff;
+    color: #333;
+    padding: 30px 0;
+    text-align: center;
+    border-top: 1px solid #ddd;
+    margin-top: auto;
+}
+.white-footer strong { color: #000; font-weight: 600; }
+.footer-links { display: flex; justify-content: center; gap: 25px; margin: 20px 0; }
+.footer-links img { width: 28px; height: 28px; transition: transform 0.3s, opacity 0.3s; opacity: 0.7; }
+.footer-links a:hover img { transform: translateY(-5px); opacity: 1; }
+.footer-info p { font-size: 13px; color: #666; margin-bottom: 10px; }
+.copyright { font-size: 12px; color: #999; }
+
+/* =========================================
+   8. RESPONSIVE (Mobile)
+   ========================================= */
+@media (max-width: 900px) {
+    .dashboard-container {
+        grid-template-columns: 1fr; /* Stack into 1 column on mobile */
+    }
+    .highlights-grid {
+        grid-template-columns: 1fr; /* 1 Card per row */
+    }
+    .logo-container.youtube-style {
+        justify-content: center; /* Center logo on mobile */
+    }
+    .f-card { width: 100%; margin-bottom: 10px; }
+    .forecast-cards { flex-wrap: wrap; }
+    .live-data { font-size: 60px; }
+    .back-btn { top: 20px; left: 20px; }
+}
+
+
+
+
+
+/* =========================================
+   SURVEY MODAL STYLES
+   ========================================= */
+
+/* The Button in the Footer */
+.survey-trigger-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 600;
+    margin: 15px 0;
+    transition: transform 0.2s;
+}
+.survey-trigger-btn:hover { transform: scale(1.05); }
+
+/* The Overlay (Background) */
+.modal-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* Black w/ opacity */
+    backdrop-filter: blur(5px);
+    align-items: center;
+    justify-content: center;
+}
+
+/* The Modal Box */
+.modal-content {
+    background: rgba(255, 255, 255, 0.15); /* Glass Effect */
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 30px;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 20px;
+    text-align: center;
+    color: white;
+    position: relative;
+    animation: popIn 0.3s ease;
+}
+
+@keyframes popIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* Close Button (x) */
+.close-modal {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #fff;
+}
+.close-modal:hover { color: #ffcccc; }
+
+/* Star Rating System */
+.star-rating {
+    display: flex;
+    flex-direction: row-reverse; /* Right to Left for CSS magic */
+    justify-content: center;
+    gap: 5px;
+    margin: 20px 0;
+}
+
+.star-rating input { display: none; }
+
+.star-rating label {
+    font-size: 30px;
+    color: #ccc;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+/* Color stars when checked or hovered */
+.star-rating input:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+    color: #ffcc00; /* Gold */
+}
+
+/* Text Area */
+textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    margin-bottom: 15px;
+    font-family: 'Poppins', sans-serif;
+    outline: none;
+}
+
+/* Submit Button */
+.submit-btn {
+    background: #ffcc00;
+    color: #333;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 20px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.submit-btn:hover { background: #e6b800; }

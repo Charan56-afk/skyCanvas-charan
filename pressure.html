@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pressure Details</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="detail-page">
+
+
+    <div class="detail-container">
+        <div class="big-card card-pressure-detail">
+            <a href="index.html" class="back-btn">← Back</a>
+            <h1>Atmospheric Pressure</h1>
+            
+            <div class="live-data" id="press-value">-- hPa</div>
+            <p id="press-status" style="font-size: 24px; font-weight: 600; margin-top: -15px; margin-bottom: 20px;">--</p>
+
+            <div class="info-text">
+                <p>
+                    Atmospheric pressure is the force exerted by the weight of the air. It is a key indicator of weather changes.
+                    <br><br>
+                    <strong>Understanding Pressure:</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>Low Pressure (< 1000 hPa):</strong> Often associated with clouds, rain, and storms.</li>
+                        <li><strong>Standard (approx 1013 hPa):</strong> Normal sea-level pressure.</li>
+                        <li><strong>High Pressure (> 1020 hPa):</strong> Often associated with clear skies and calm weather.</li>
+                    </ul>
+                </p>
+                <br>
+                <img src="https://comportho.com/wp-content/uploads/2022/07/pressure.jpg" 
+                     width="100%" style="border-radius: 15px; margin-top: 10px; border: 2px solid rgba(255,255,255,0.2);">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const apikey = "c1c4e900c5a9fbac7d97ddec32761393";
+
+        async function getPressure() {
+            const storedCity = localStorage.getItem("weatherCity") || "Eluru";
+            document.querySelector("h1").innerText = `Pressure in ${storedCity}`;
+
+            try {
+                const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?units=metric&q=${storedCity}&appid=${apikey}`);
+                const data = await response.json();
+                
+                const pressure = data.main.pressure;
+
+                // Update Number
+                document.getElementById('press-value').innerText = pressure + " hPa";
+
+                // Update Status
+                const statusText = document.getElementById('press-status');
+                
+                if (pressure < 1000) {
+                    statusText.innerText = "Low Pressure System";
+                } else if (pressure >= 1000 && pressure <= 1020) {
+                    statusText.innerText = "Normal / Stable";
+                } else {
+                    statusText.innerText = "High Pressure System";
+                }
+
+            } catch (error) {
+                console.error("Error fetching Pressure:", error);
+                document.getElementById('press-value').innerText = "--";
+            }
+        }
+
+        getPressure();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sky Canvas Weather</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <div class="main-section">
+            
+            <div class="logo-container youtube-style">
+                <img src="c49b5e17-3294-49c5-ba2e-01c74da4374e.png" alt="Sky Canvas Logo" class="yt-icon">
+                <div class="yt-text-wrapper">
+                    <span class="yt-brand-name">Sky Canvas</span>
+                    <sup class="yt-sup">IN</sup>
+                </div>
+            </div>
+
+            <div class="search-bar">
+                <input type="text" placeholder="Search city..." spellcheck="false">
+                <button>
+                    <img src="https://img.icons8.com/ios-glyphs/30/ffffff/search--v1.png" alt="search" style="width: 20px; height: 20px;">
+                </button>
+            </div>
+            <div class="error">Invalid city name</div>
+
+            <div class="current-weather">
+                <div class="weather-header">
+                    <div>
+                        <h2 class="city">Locating...</h2>
+                        <p class="date-time" id="datetime">--:--</p>
+                    </div>
+                    <div class="unit-toggle">°C</div>
+                </div>
+                
+                <div class="weather-main-info">
+                    <div class="temp-box">
+                        <img src="clear-sky.png" class="weather-icon" alt="Weather Icon">
+                        <h1 class="temp">--°</h1>
+                    </div>
+                    <div class="condition-box">
+                        <p class="condition">--</p>
+                        <p class="high-low">H:--° L:--°</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="forecast-section">
+                <h3>Hourly Forecast</h3>
+                <div class="forecast-cards" id="forecast-container">
+                    </div>
+            </div>
+        </div>
+
+        <div class="highlights-section">
+            <h3>Today's Highlights</h3>
+            
+            <div class="highlights-grid">
+                
+                <div class="highlight-card card-visibility" onclick="window.location.href='visibility.html'">
+                    <p class="card-title">Visibility</p>
+                    <h2 class="visibility">-- km</h2>
+                    <p class="card-status">Normal</p>
+                </div>
+
+                <div class="highlight-card card-wind" onclick="window.location.href='wind.html'">
+                    <p class="card-title">Wind Status</p>
+                    <h2 class="wind">-- km/h</h2>
+                    <div class="wind-direction">
+                        <span class="compass">➤</span> Direction
+                    </div>
+                </div>
+
+                <div class="highlight-card card-humidity" onclick="window.location.href='humidity.html'">
+                    <p class="card-title">Humidity</p>
+                    <h2 class="humidity">--%</h2>
+                    <div class="humidity-bar-container">
+                        <div class="humidity-bar"></div>
+                    </div>
+                    <p class="card-status">Normal</p>
+                </div>
+
+                <div class="highlight-card card-pressure" onclick="window.location.href='pressure.html'">
+                    <p class="card-title">Pressure</p>
+                    <h2 class="pressure">-- hPa</h2>
+                    <p class="card-status">Rising</p>
+                </div>
+
+                <div class="highlight-card card-uv" onclick="window.location.href='uvindex.html'">
+                    <p class="card-title">UV Index</p>
+                    <div class="gauge">
+                        <div class="gauge-fill"></div>
+                        <span class="gauge-value" id="uv-dashboard-value">--</span>
+                    </div>
+                    <p class="card-status">Moderate</p>
+                </div>
+
+                <div class="highlight-card card-aqi" onclick="window.location.href='airquality.html'">
+                    <p class="card-title">Air Quality</p>
+                    <div class="aqi-slider">
+                        <div class="aqi-dot"></div>
+                    </div>
+                    <h2 class="aqi-val" id="aqi-dashboard-value">--</h2>
+                    <p class="card-status" id="aqi-dashboard-status">--</p>
+                </div> 
+
+            </div> 
+        </div> 
+    </div>
+
+    <footer class="white-footer">
+        <p>Designed & Developed by <strong style="color: #9d00ff;">Charan Peddada</strong></p>
+        
+        <div class="footer-links">
+            <a href="https://www.instagram.com/_im_unique_15?igsh=MWNsdnoxNXhvaWw1MQ==" target="_blank" title="Instagram">
+                <img src="https://cdn-icons-png.flaticon.com/128/15707/15707749.png" alt="Insta" style="width: 60px; height: 60px;">
+            </a>
+            
+            <a href="#" target="_blank" title="LinkedIn">
+                <img src="https://cdn-icons-png.flaticon.com/128/3536/3536505.png" alt="LinkedIn" style="width: 60px; height: 60px;">
+            </a>
+
+            <a href="https://github.com/CharanPeddada5952" target="_blank" title="GitHub">
+                <img src="https://cdn-icons-png.flaticon.com/128/3291/3291695.png" alt="GitHub" style="width: 60px; height: 60px;">
+            </a>
+
+            <a href="mailto:charanpeddada252@gmail.com" title="Email">
+                <img src="https://cdn-icons-png.flaticon.com/128/2165/2165061.png" alt="Email" style="width: 60px; height: 60px;">
+            </a>
+            <button id="open-survey-btn" class="survey-trigger-btn">
+    Rate Our Website★
+</button>
+        </div>
+        
+        <div class="footer-info">
+            <p>Eluru, Andhra Pradesh • 534003</p>
+        </div>
+
+        <p class="copyright">© 2025 WeatherSphere. All rights reserved.</p>
+    </footer>
+    <div id="survey-modal" class="modal-overlay">
+    <div class="modal-content glass-card">
+        <span class="close-modal">&times;</span>
+        <h2>We Value Your Feedback!</h2>
+        <p>How was your experience with WeatherSphere?</p>
+        
+        <form id="feedback-form">
+            <div class="star-rating">
+                <input type="radio" id="star5" name="rating" value="5" /><label for="star5">★</label>
+                <input type="radio" id="star4" name="rating" value="4" /><label for="star4">★</label>
+                <input type="radio" id="star3" name="rating" value="3" /><label for="star3">★</label>
+                <input type="radio" id="star2" name="rating" value="2" /><label for="star2">★</label>
+                <input type="radio" id="star1" name="rating" value="1" /><label for="star1">★</label>
+            </div>
+
+            <textarea placeholder="Tell us what you liked or how we can improve..." rows="4" required></textarea>
+            
+            <button type="submit" class="submit-btn">Submit Review</button>
+        </form>
+    </div>
+</div>
+
+    <script src="script.js" defer></script>
+</body>
+</html>

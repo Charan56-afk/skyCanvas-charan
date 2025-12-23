@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Quality Details</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="detail-page">
+
+    <div class="detail-container">
+        <div class="big-card card-aqi-detail">
+            <a href="index.html" class="back-btn">← Back</a>
+            <h1>Air Quality Index</h1>
+            
+            <div class="live-data" id="aqi-value">--</div>
+            
+            <p id="aqi-status" style="font-size: 24px; font-weight: 600; margin-top: -15px; margin-bottom: 20px;">--</p>
+
+            <div class="info-text">
+                <p>
+                    The Air Quality Index (AQI) tracks how clean or polluted your air is today. Breathing polluted air can lead to health issues, especially for children, the elderly, and those with respiratory conditions.
+                    <br><br>
+                    <strong>Pollution Levels:</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>🟢 <strong>Good (1):</strong> Air quality is satisfactory.</li>
+                        <li>🟡 <strong>Fair (2):</strong> Acceptable air quality.</li>
+                        <li>🟠 <strong>Moderate (3):</strong> Sensitive groups may feel effects.</li>
+                        <li>🔴 <strong>Poor (4):</strong> Healthy people may experience symptoms.</li>
+                        <li>🟣 <strong>Very Poor (5):</strong> Health warnings; avoid outdoor activities.</li>
+                    </ul>
+                </p>
+                <br>
+                <img src="https://img.freepik.com/premium-vector/checking-air-quality-index-infographic-with-air-quality-index-earth-vector-illustration_647318-534.jpg?w=2000" 
+                     width="100%" 
+                     style="border-radius: 15px; margin-top: 10px; border: 2px solid rgba(255,255,255,0.2);">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const apikey = "c1c4e900c5a9fbac7d97ddec32761393";
+
+        async function getAQI() {
+            // 1. Get stored city
+            const storedCity = localStorage.getItem("weatherCity") || "Eluru";
+            document.querySelector("h1").innerText = `Air Quality in ${storedCity}`;
+
+            try {
+                // STEP A: Get City Coordinates (Lat/Lon)
+                // We need this because the Pollution API requires coordinates, not city names.
+                const weatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?units=metric&q=${storedCity}&appid=${apikey}`);
+                const weatherData = await weatherResponse.json();
+
+                if (weatherData.coord) {
+                    const lat = weatherData.coord.lat;
+                    const lon = weatherData.coord.lon;
+
+                    // STEP B: Fetch Air Pollution Data
+                    const aqiResponse = await fetch(`https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${apikey}`);
+                    const aqiData = await aqiResponse.json();
+
+                    // OpenWeather returns AQI as a number from 1 to 5
+                    const aqiLevel = aqiData.list[0].main.aqi;
+
+                    // Update the Number
+                    document.getElementById('aqi-value').innerText = aqiLevel;
+
+                    // Update Status Text
+                    const statusText = document.getElementById('aqi-status');
+                    
+                    if(aqiLevel === 1) statusText.innerText = "Good";
+                    else if(aqiLevel === 2) statusText.innerText = "Fair";
+                    else if(aqiLevel === 3) statusText.innerText = "Moderate";
+                    else if(aqiLevel === 4) statusText.innerText = "Poor";
+                    else statusText.innerText = "Very Poor";
+                }
+
+            } catch (error) {
+                console.error("Error fetching AQI:", error);
+                document.getElementById('aqi-value').innerText = "--";
+            }
+        }
+
+        getAQI();
+    </script>
+
+</body>
+</html>

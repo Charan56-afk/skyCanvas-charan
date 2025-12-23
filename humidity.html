@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Humidity Details</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="detail-page">
+
+    
+
+    <div class="detail-container">
+        <div class="big-card card-humidity-detail">
+            <a href="index.html" class="back-btn">← Back</a>
+            <h1>Humidity</h1>
+            
+            <div class="live-data" id="hum-value">--%</div>
+            <p id="hum-status" style="font-size: 24px; font-weight: 600; margin-top: -15px; margin-bottom: 20px;">--</p>
+
+            <div class="info-text">
+                <p>
+                    Humidity is the concentration of water vapor present in the air. Water vapor, the gaseous state of water, is generally invisible to the human eye.
+                    <br><br>
+                    <strong>Comfort Levels:</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>Less than 30%:</strong> Dry (May cause dry skin/eyes)</li>
+                        <li><strong>30% - 60%:</strong> Comfortable / Healthy</li>
+                        <li><strong>Above 60%:</strong> Humid / Muggy</li>
+                    </ul>
+                </p>
+                <br>
+                <img src="https://airinnovations.com/wp-content/uploads/Relative-Humidity-Video.jpg" 
+                     width="100%" 
+                     style="border-radius: 15px; margin-top: 10px; border: 2px solid rgba(255,255,255,0.2);">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const apikey = "c1c4e900c5a9fbac7d97ddec32761393";
+
+        async function getHumidity() {
+            const storedCity = localStorage.getItem("weatherCity") || "Eluru";
+            document.querySelector("h1").innerText = `Humidity in ${storedCity}`;
+
+            try {
+                const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?units=metric&q=${storedCity}&appid=${apikey}`);
+                const data = await response.json();
+                
+                const humidity = data.main.humidity;
+
+                // Update Number
+                document.getElementById('hum-value').innerText = humidity + "%";
+
+                // Update Status
+                const statusText = document.getElementById('hum-status');
+                if (humidity < 30) {
+                    statusText.innerText = "Dry Air";
+                } else if (humidity >= 30 && humidity <= 60) {
+                    statusText.innerText = "Comfortable";
+                } else {
+                    statusText.innerText = "High / Humid";
+                }
+
+            } catch (error) {
+                console.error("Error fetching Humidity:", error);
+                document.getElementById('hum-value').innerText = "--";
+            }
+        }
+
+        getHumidity();
+    </script>
+
+</body>
+</html>

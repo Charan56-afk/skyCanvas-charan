@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wind Status Details</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="detail-page">
+<body class="detail-page">
+
+    <div class="detail-container">
+        <div class="big-card card-wind-detail">
+            
+            <a href="index.html" class="back-btn">← Back</a>
+   
+            <h1>Wind Status</h1>
+            
+            <div class="live-data" id="wind-value">-- km/h</div>
+            
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px;">
+                <div id="wind-arrow" style="font-size: 30px; transition: transform 0.5s; display: inline-block;">➤</div> 
+                <p id="wind-direction" style="font-size: 24px; font-weight: 600;">--</p>
+            </div>
+
+            <div class="info-text">
+                <p>
+                    Wind is the movement of air caused by the uneven heating of the Earth by the sun. It is measured by its speed and the direction it blows <em>from</em>.
+                    <br><br>
+                    <strong>Wind Scales (Beaufort):</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li><strong>0-2 km/h:</strong> Calm (Smoke rises vertically)</li>
+                        <li><strong>6-11 km/h:</strong> Light Breeze (Leaves rustle)</li>
+                        <li><strong>20-28 km/h:</strong> Moderate Breeze (Dust rises)</li>
+                        <li><strong>40+ km/h:</strong> Strong Wind (Difficult to walk against)</li>
+                    </ul>
+                </p>
+                <br>
+                <img src="upscalemedia-transformed.jpeg" 
+                     width="100%" style="border-radius: 15px; margin-top: 10px; border: 5px solid rgb(249, 229, 9);">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const apikey = "c1c4e900c5a9fbac7d97ddec32761393";
+
+        async function initWindPage() {
+            const storedCity = localStorage.getItem("weatherCity") || "Eluru";
+            document.querySelector("h1").innerText = `Wind in ${storedCity}`;
+
+            // 1. Try to get the EXACT values saved from the dashboard
+            const savedSpeed = localStorage.getItem("savedWindSpeed");
+            const savedDeg = localStorage.getItem("savedWindDeg");
+
+            if (savedSpeed && savedDeg) {
+                // OPTION A: Use saved data (Matches Dashboard perfectly)
+                console.log("Using saved dashboard data");
+                updateUI(savedSpeed, savedDeg);
+            } else {
+                // OPTION B: Fallback (Fetch fresh data if nothing is saved)
+                console.log("No saved data found, fetching new data...");
+                await fetchWindFresh(storedCity);
+            }
+        }
+
+        function updateUI(speed, deg) {
+            // 1. Update Speed
+            // Note: We use the raw value to match the dashboard. 
+            // (If dashboard says 1.54, this says 1.54)
+            document.getElementById('wind-value').innerText = speed + " km/h";
+
+            // 2. Update Direction Text (N, NE, E...)
+            const sectors = ["North", "NE", "East", "SE", "South", "SW", "West", "NW", "North"];
+            const index = Math.round(deg / 45) % 8;
+            const directionText = sectors[index];
+            document.getElementById('wind-direction').innerText = directionText;
+
+            // 3. Rotate Arrow
+            // Subtract 90deg because the default arrow '➤' points Right (East)
+            const arrow = document.getElementById('wind-arrow');
+            arrow.style.transform = `rotate(${deg - 90}deg)`;
+        }
+
+        async function fetchWindFresh(city) {
+            try {
+                const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?units=metric&q=${city}&appid=${apikey}`);
+                const data = await response.json();
+                // Use raw speed to match dashboard consistency
+                updateUI(data.wind.speed, data.wind.deg);
+            } catch (error) {
+                console.error("Error fetching Wind:", error);
+                document.getElementById('wind-value').innerText = "--";
+            }
+        }
+
+        // Run the function
+        initWindPage();
+    </script>
+
+</body>
+</html>
